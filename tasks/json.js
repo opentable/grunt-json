@@ -18,16 +18,33 @@ module.exports = function (grunt) {
     var concatJson = function (files, data) {
         var options = data.options;
         var namespace = options && options.namespace || 'myjson';               // Allows the user to customize the namespace but will have a default if one is not given.
+        var singleNamespace = options && options.singleNamespace || false;      // Apply keys of concatted files directly to main namespace. Keys will overwrite previous keys of same name. 
+        var noVar = options && options.noVar || false;                          // Allows the user to assign the namespace without var.
         var includePath = options && options.includePath || false;              // Allows the user to include the full path of the file and the extension.
-        var processName = options.processName || defaultProcessNameFunction;    // Allows the user to modify the path/name that will be used as the identifier.
+        var processName = options && options.processName || defaultProcessNameFunction;    // Allows the user to modify the path/name that will be used as the identifier.
         var basename;
         var filename;
 
-        return 'var ' + namespace + ' = ' + namespace + ' || {};' + files.map(function (filepath) {
-            basename = path.basename(filepath, '.json');
-            filename = (includePath) ? processName(filepath) : processName(basename);
-            return '\n' + namespace + '["' + filename + '"] = ' + grunt.file.read(filepath) + ';';
-        }).join('');
+        var output = (noVar ? '' : 'var ') + namespace + ' = '
+        if (singleNamespace) {
+            var json = {}
+            files.map(function (filepath) {
+                var fileJson = grunt.file.readJSON(filepath)
+                for (var key in fileJson) {
+                    json[key] = fileJson[key]
+                }
+            })
+            output += JSON.stringify(json, null, "\t") + ';'
+            // console.log('output',output,'json',json)
+        } else {
+            output += namespace + ' || {};'
+            output += files.map(function (filepath) {
+                basename = path.basename(filepath, '.json');
+                filename = (includePath) ? processName(filepath) : processName(basename);
+                return '\n' + namespace + '["' + filename + '"] = ' + grunt.file.read(filepath) + ';';
+            }).join('');
+        }
+        return output
     };
 
     // Please see the grunt documentation for more information regarding task and
@@ -51,8 +68,8 @@ module.exports = function (grunt) {
                 }
             });
 
-            var json = concatJson(files, data);
-            grunt.file.write(destFile, json);
+            var js = concatJson(files, data);
+            grunt.file.write(destFile, js);
             grunt.log.write('File "' + destFile + '" created.');
         });
     });
