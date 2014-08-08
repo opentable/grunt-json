@@ -29,7 +29,15 @@ module.exports = function (grunt) {
       }
     },
     json: {
-      dest: {
+      test: {
+        options: {
+          singleNamespace: true,
+          noVar: true
+        },
+        src: ['test/**/*.json'],
+        dest: 'test/json.js'
+      }
+      anotherTest: {
         src: ['test/**/*.json'],
         dest: 'test/json.js'
       }

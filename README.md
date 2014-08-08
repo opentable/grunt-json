@@ -59,6 +59,16 @@ json: {
         src: ['path/to/source/**/*.json'],
         dest: 'path/to/compiled/json.js'
     }
+    singleNamespace: {
+        options: {
+            namespace: 'myjson',
+            singleNamespace: true,
+            noVar: true
+            }
+        },
+        src: ['path/to/source/**/*.json'],
+        dest: 'path/to/compiled/json.js'
+    }
 }
 ```
 
