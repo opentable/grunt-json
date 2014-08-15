@@ -22,6 +22,7 @@ module.exports = function (grunt) {
         var noVar = options && options.noVar || false;                          // Allows the user to assign the namespace without var.
         var includePath = options && options.includePath || false;              // Allows the user to include the full path of the file and the extension.
         var processName = options && options.processName || defaultProcessNameFunction;    // Allows the user to modify the path/name that will be used as the identifier.
+        var jsonDest = options && options.jsonDest || null;    // Allows the user to output bundled json to a destination. Only valid if singleNamespace is used.
         var basename;
         var filename;
 
@@ -34,8 +35,11 @@ module.exports = function (grunt) {
                     json[key] = fileJson[key]
                 }
             })
+            if (jsonDest) {
+                grunt.file.write(jsonDest, JSON.stringify(json, null, "\t"))
+                grunt.log.write('json file "' + jsonDest + '" created.');
+            }
             output += JSON.stringify(json, null, "\t") + ';'
-            // console.log('output',output,'json',json)
         } else {
             output += namespace + ' || {};'
             output += files.map(function (filepath) {
@@ -71,6 +75,9 @@ module.exports = function (grunt) {
             var js = concatJson(files, data);
             grunt.file.write(destFile, js);
             grunt.log.write('File "' + destFile + '" created.');
+            if (jsonDest) {
+                grunt.file.write(jsonDest, )
+            }
         });
     });
 };
