@@ -34,7 +34,7 @@ module.exports = function (grunt) {
                 for (var key in fileJson) {
                     json[key] = fileJson[key]
                 }
-            })
+            });
             if (jsonDest) {
                 grunt.file.write(jsonDest, JSON.stringify(json, null, "\t"))
                 grunt.log.write('json file "' + jsonDest + '" created.');
@@ -75,9 +75,6 @@ module.exports = function (grunt) {
             var js = concatJson(files, data);
             grunt.file.write(destFile, js);
             grunt.log.write('File "' + destFile + '" created.');
-            if (jsonDest) {
-                grunt.file.write(jsonDest, )
-            }
         });
     });
 };
