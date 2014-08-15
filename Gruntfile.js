@@ -32,11 +32,12 @@ module.exports = function (grunt) {
       test: {
         options: {
           singleNamespace: true,
-          noVar: true
+          noVar: true,
+          jsonDest: 'test/jsonDestTest.json'
         },
         src: ['test/**/*.json'],
         dest: 'test/json.js'
-      }
+      },
       anotherTest: {
         src: ['test/**/*.json'],
         dest: 'test/json.js'
